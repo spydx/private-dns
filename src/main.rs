@@ -7,8 +7,6 @@ use dns::header::Header;
 use dns::question::Question;
 
 fn main() {
-    println!("Hello, world!");
-    println!("I am Private DNS");
 
     let address = "0.0.0.0";
     let port = "1053";
@@ -16,37 +14,20 @@ fn main() {
 
     let mut buf = [0; 512];
 
-    println!("> listening on port: {}", port);
-
     loop {
-        let (len, addr) = socket.recv_from(&mut buf).expect("Could not RX data");
-
-        println!("\nReceived query from {} with length {} bytes", addr, len);
-        println!("\n### DNS Query: ###");
-        debug_print_bytes(&buf[..len]);
-
-        println!("\n### HEADER ###");
-        let header = Header::from_bytes(&buf[..Header::DNS_HEADER_SIZE])
-            .expect("Could not parse DNS header");
-        println!("\n{:?}", header);
-
-        println!("\n### QUESTION: ###");
-        debug_print_bytes(&buf[Header::DNS_HEADER_SIZE..len]);
-        println!();
-
-        let question = Question::from_bytes(&buf[Header::DNS_HEADER_SIZE..len])
-            .expect("Could not parse DNS question");
-        println!("\n{:?}", question);
-
-        let response = ResponseBuilder::new()
-                    .add_header(header)
-                    .add_question(question)
-                    .build();
-
-        let send_buffer = &response.to_bytes();
-
-        socket.send_to(&send_buffer, addr)
-                .expect("Cound not send");
+        match udp_socket.recv_from(&mut buf) {
+            Ok((size, source)) => {
+                println!("Received {} bytes from {}", size, source);
+                let response = [];
+                udp_socket
+                    .send_to(&response, source)
+                    .expect("Failed to send response");
+            }
+            Err(e) => {
+                eprintln!("Error receiving data: {}", e);
+                break;
+            }
+        }
     }
 }
 
