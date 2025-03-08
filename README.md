@@ -4,7 +4,7 @@ Guid [Building a DNS Server in Rust: part 1](https://rust-trends.com/posts/build
 
 ## Part 1
 
-### Server 
+### Server
 
 ```shell
 ❯ cargo r
@@ -36,7 +36,7 @@ Labels:
 [Label("www"), Label("kefo"), Label("no")]
 
 Question { name: [Label("www"), Label("kefo"), Label("no")], qtype: A, qclass: IN }
-´´´
+```
 
 ### Client
 
